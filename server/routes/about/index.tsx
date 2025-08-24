@@ -1,18 +1,7 @@
 import React from 'react';
 import { Router } from 'express';
 import { renderPage } from '../../render.ts';
-
-
-
-function About() {
-  return (
-    <div>
-      <h1>About Page</h1>
-      <p>This is a new page created to demonstrate the template's functionality.</p>
-      <a href="/">Go back to Home</a>
-    </div>
-  );
-}
+import About from '../../../src/pages/about/index.tsx';
 
 export function router() {
   const router = Router();

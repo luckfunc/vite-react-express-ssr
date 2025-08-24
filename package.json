@@ -1,18 +1,30 @@
 {
   "name": "vite-react-express-ssr",
   "version": "1.0.0",
-  "type": "module",
   "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/luckfunc/vite-react-express-ssr#readme",
+  "bugs": {
+    "url": "https://github.com/luckfunc/vite-react-express-ssr/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luckfunc/vite-react-express-ssr.git"
+  },
+  "funding": "https://github.com/sponsors/luckfunc",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"vite\" \"nodemon --watch server --ext ts,tsx --exec tsx server/index.ts\"",
     "build": "vite build && tsc -p tsconfig.server.json",
+    "ci:eslint": "eslint -f json src -o ./.ci/eslint.json",
+    "dev": "concurrently \"vite\" \"nodemon --watch server --ext ts,tsx --exec tsx server/index.ts\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "start": "NODE_ENV=production node dist/server/index.js",
     "type-check": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "express": "^5.1.0",
     "react": "^19.1.1",
@@ -25,6 +37,8 @@
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.1",
     "concurrently": "^9.2.0",
+    "eslint": "^9.34.0",
+    "eslint-config-ali": "^16.5.0",
     "glob": "^11.0.3",
     "nodemon": "^3.1.10",
     "tsx": "^4.20.5",
