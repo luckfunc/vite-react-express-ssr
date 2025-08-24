@@ -29,9 +29,6 @@ async function start() {
     app.use(express.static(path.join(__dirname, '../client'), { index: false }));
   }
 
-  // Serve public assets
-  app.use(express.static(path.join(__dirname, '../../public')));
-
   // Register all routes from the central registry
   Object.entries(routes).forEach(([name, routeModule]) => {
     // The path is derived from the key in the routes object.
@@ -45,6 +42,9 @@ async function start() {
       console.warn(`The route module for '${name}' is missing a router export.`);
     }
   });
+
+  // Serve public assets after SSR routes
+  app.use(express.static(path.join(__dirname, '../../public')));
 
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
