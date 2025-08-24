@@ -18,8 +18,6 @@ async function start() {
     const vite = await createViteServer({
       server: {
         middlewareMode: true,
-        // @ts-ignore - This option is valid but may not be in the type definition
-        printUrls: false, // Prevent Vite from printing its own URL
       },
       appType: 'custom',
     });
