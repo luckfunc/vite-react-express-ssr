@@ -7,7 +7,11 @@ export function router() {
   const router = Router();
 
   router.get('/', (req, res) => {
-    const html = renderPage(<About />, 'about');
+    const html = renderPage({
+      pageComponent: <About />,
+      pageName: 'about',
+      title: 'About Us | SSR Template',
+    });
     res.send(html);
   });
 

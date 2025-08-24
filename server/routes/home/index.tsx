@@ -16,8 +16,13 @@ export function router() {
       // 2. Pass the data to the component for server-side rendering.
       const pageComponent = <HomePage {...initialData} />;
 
-      // 3. Pass the data AGAIN to renderPage so it can be injected into the HTML for the client.
-      const html = renderPage(pageComponent, 'home', initialData);
+      // 3. Pass all options to the renderPage function.
+      const html = renderPage({
+        pageComponent,
+        pageName: 'home',
+        initialData,
+        title: 'Home Page | SSR Template',
+      });
 
       res.status(200).set({ 'Content-Type': 'text/html' }).send(html);
     } catch (error) {
