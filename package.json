@@ -19,7 +19,7 @@
   "scripts": {
     "build": "vite build && tsc -p tsconfig.server.json",
     "ci:eslint": "eslint -f json src -o ./.ci/eslint.json",
-    "dev": "concurrently \"vite\" \"nodemon --watch server --ext ts,tsx --exec tsx server/index.ts\"",
+    "dev": "nodemon --watch server --watch src --ext ts,tsx --exec tsx server/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "start": "NODE_ENV=production node dist/server/index.js",
