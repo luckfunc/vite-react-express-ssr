@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { createServer as createViteServer } from 'vite';
-import { glob } from 'glob';
+import { routes } from './routes/index.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,7 +16,10 @@ async function start() {
   if (!isProd) {
     // In development, instantiate Vite server and apply as middleware
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { 
+        middlewareMode: true,
+        printUrls: false, // Prevent Vite from printing its own URL
+      },
       appType: 'custom',
     });
     app.use(vite.middlewares);
@@ -28,17 +31,19 @@ async function start() {
   // Serve public assets
   app.use(express.static(path.join(__dirname, '../../public')));
 
-  // Dynamically import and register routes
-  const routeFiles = await glob('./routes/**/index.tsx', { cwd: __dirname });
-  for (const file of routeFiles) {
-    const routeModule = await import(file);
-    if (routeModule.path && routeModule.router) {
-      app.use(routeModule.path, routeModule.router());
-      console.log(`Registered route: ${routeModule.path}`);
+  // Register all routes from the central registry
+  Object.entries(routes).forEach(([name, routeModule]) => {
+    // The path is derived from the key in the routes object.
+    // 'home' is a special case for the root path.
+    const path = name === 'home' ? '/' : `/${name}`;
+
+    if (routeModule.router) {
+      app.use(path, routeModule.router());
+      console.log(`Registered route: ${path}`);
     } else {
-      console.warn(`Could not register route from ${file}: missing path or router export.`);
+      console.warn(`The route module for '${name}' is missing a router export.`);
     }
-  }
+  });
 
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

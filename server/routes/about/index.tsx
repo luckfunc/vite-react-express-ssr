@@ -1,8 +1,8 @@
+import React from 'react';
 import { Router } from 'express';
 import { renderPage } from '../../render.ts';
-import React from 'react';
 
-export const path = '/about';
+
 
 function About() {
   return (

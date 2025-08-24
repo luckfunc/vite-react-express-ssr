@@ -21,16 +21,22 @@ try {
 
 const manifest = isProd ? JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) : {};
 
-export function renderPage(pageComponent: React.ReactElement, pageName: string) {
+export function renderPage(pageComponent: React.ReactElement, pageName: string, initialData?: object) {
   // 2. 渲染 React 组件为字符串
   const appHtml = renderToString(pageComponent);
 
-  // 3. 根据环境决定客户端脚本路径
+  // 3. 注入初始数据
+  let initialDataScript = '';
+  if (initialData) {
+    // 安全地将JSON注入HTML，防止XSS攻击
+    const safeJson = JSON.stringify(initialData).replace(/</g, '\u003c');
+    initialDataScript = `<script id="__INITIAL_DATA__" type="application/json">${safeJson}</script>`;
+  }
+
+  // 4. 根据环境决定客户端脚本路径
   let clientScript = '';
   if (isProd) {
     // 生产环境：从 manifest 获取带 hash 的文件名
-    // vite.config.ts 中的入口是 `home`，对应 `src/pages/home/client.tsx`
-    // manifest 的 key 是相对于 root 的源文件路径
     const entryKey = `src/pages/${pageName}/client.tsx`;
     if (manifest[entryKey]) {
       clientScript = `<script type="module" src="/${manifest[entryKey]['file']}"></script>`;
@@ -42,10 +48,10 @@ export function renderPage(pageComponent: React.ReactElement, pageName: string) 
     clientScript = `<script type="module" src="/src/pages/${pageName}/client.tsx"></script>`;
   }
 
-  // 4. 注入内容和脚本到 HTML 模板
+  // 5. 注入所有内容到HTML模板
   const html = template
     .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
-    .replace('</body>', `${clientScript}</body>`);
+    .replace('</body>', `${initialDataScript}${clientScript}</body>`);
 
   return html;
 }

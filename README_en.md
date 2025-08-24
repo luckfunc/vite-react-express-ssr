@@ -73,19 +73,64 @@ Runs the TypeScript compiler to check for any type errors in the project.
 
 ## How to Add a New Page
 
-Thanks to the "Convention over Configuration" principle, adding a new page is now very simple, with **no configuration files to modify**.
+The workflow for adding a new page is highly engineered, with paths being automatically derived from directory names to prevent manual errors.
 
-Let's say you want to add a `contact` page at the `/contact` path:
+Let's say you want to add a `contact` page, which will correspond to the `/contact` path:
 
-1.  **Create the Backend Route File**:
-    -   Create a new folder inside `server/routes/`, for example, `contact`.
-    -   Create an `index.tsx` file inside `server/routes/contact/`.
-    -   This file must export two things:
-        -   `path` (string): The URL path for the page (e.g., `export const path = '/contact';`)
-        -   `router` (function): The Express router handler (e.g., `export function router() { ... }`)
+**Step 1: Create Page Files**
 
-2.  **Create the Frontend Entry File**:
-    -   Create a corresponding folder inside `src/pages/`, for example, `contact`.
-    -   Create a `client.tsx` file inside `src/pages/contact/` for client-side hydration.
+1.  **Create the Backend Route File**: `server/routes/contact/index.tsx`
+    -   This file now **only needs to export a `router` function**.
 
-That's it! Restart the development server (`pnpm dev`), and the new `/contact` route will be automatically discovered and available.
+2.  **Create the Frontend Entry File**: `src/pages/contact/client.tsx`
+    -   The content is the same as before, used for client-side hydration.
+
+**Step 2: Register the New Page in the Route Hub**
+
+-   Open the `server/routes/index.ts` file.
+-   Import your newly created route module and add it as a **property** to the `routes` object. The `key` of the object will be used as the page's path name.
+
+    ```typescript
+    import * as home from './home/index.tsx';
+    import * as about from './about/index.tsx';
+    import * as contact from './contact/index.tsx'; // 1. Import the new route
+
+    export const routes = {
+      home,      // -> path will be '/'
+      about,     // -> path will be '/about'
+      contact,   // 2. Add to the object, the key is the path name
+    };
+    ```
+
+That's it! Restart the development server (`pnpm dev`), and the new route will be active. This is the most robust and clear workflow.
+
+## Passing Props from Server to Client
+
+In a real-world app, you'll need to fetch data on the server and use it to render your page. This template uses a type-safe process called "state hydration" to make this seamless. To ensure type safety across the server and client, we use the `src/types/index.ts` file for all shared type definitions.
+
+**Here's the workflow:**
+
+1.  **Define a Shared Type**: Define the Props interface for your page component in `src/types/index.ts`.
+    ```typescript
+    export interface HomePageProps {
+      userName: string;
+    }
+    ```
+2.  **Provide Data on the Server**: In your route file (e.g., `server/routes/home/index.tsx`), import the type, create your data object, and pass it to both your component and the `renderPage` function.
+    ```typescript
+    import type { HomePageProps } from '../../../src/types';
+    // ...
+    const initialData: HomePageProps = { userName: 'Gemini' };
+    const pageComponent = <HomePage {...initialData} />;
+    const html = renderPage(pageComponent, 'home', initialData);
+    // ...
+    ```
+3.  **Receive Data on the Client**: The client entry file (e.g., `src/pages/home/client.tsx`) automatically receives the data. To let TypeScript know its shape, import the shared type and use a type assertion.
+    ```typescript
+    import type { HomePageProps } from '../../types';
+    // ...
+    const initialData = JSON.parse(...) as HomePageProps;
+    hydrateRoot(document.getElementById('root')!, <HomePage {...initialData} />);
+    ```
+
+Following this pattern gives you full, end-to-end type safety for your data. Any mismatch between what the server sends and what the client expects will be caught by TypeScript at compile time.

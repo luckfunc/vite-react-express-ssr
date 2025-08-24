@@ -73,19 +73,64 @@
 
 ## 如何添加新页面
 
-得益于“约定优于配置”的原则，添加新页面现在非常简单，**无需修改任何配置文件**。
+添加新页面的流程高度工程化，路径根据目录名自动生成，杜绝了手动失误。
 
-假设要添加一个 `contact` 页面，路径为 `/contact`：
+假设要添加一个 `contact` 页面 (对应路径 `/contact`)：
 
-1.  **创建后端路由文件**:
-    -   在 `server/routes/` 下创建一个新文件夹，例如 `contact`。
-    -   在 `server/routes/contact/` 中创建一个 `index.tsx` 文件。
-    -   此文件必须导出两个东西：
-        -   `path` (字符串): 页面的 URL 路径 (例如: `export const path = '/contact';`)
-        -   `router` (函数): Express 的路由处理函数 (例如: `export function router() { ... }`)
+**第 1 步: 创建页面文件**
 
-2.  **创建前端入口文件**:
-    -   在 `src/pages/` 下创建一个对应的文件夹，例如 `contact`。
-    -   在 `src/pages/contact/` 中创建一个 `client.tsx` 文件，用于客户端的注水操作。
+1.  **创建后端路由文件**: `server/routes/contact/index.tsx`
+    -   这个文件现在**只需要导出一个 `router` 函数**即可。
 
-完成！重启开发服务器 (`pnpm dev`)，新的 `/contact` 路由就会被自动发现并生效。
+2.  **创建前端入口文件**: `src/pages/contact/client.tsx`
+    -   内容和之前一样，用于客户端注水。
+
+**第 2 步: 在路由中心注册新页面**
+
+-   打开 `server/routes/index.ts` 文件。
+-   导入你刚刚创建的路由模块，并将其作为一个**属性**添加到 `routes` 对象中。对象的 `key` 将被用作页面的路径名。
+
+    ```typescript
+    import * as home from './home/index.tsx';
+    import * as about from './about/index.tsx';
+    import * as contact from './contact/index.tsx'; // 1. 导入新路由
+
+    export const routes = {
+      home,      // -> 路径为 '/'
+      about,     // -> 路径为 '/about'
+      contact,   // 2. 添加到对象，key 即为路径名
+    };
+    ```
+
+完成！重启开发服务器 (`pnpm dev`)，新路由就会生效。这是目前最健壮、最清晰的工作流程。
+
+## 从服务端传递数据到客户端 (Props)
+
+在真实的应用里，你肯定需要在服务端获取数据，然后用这些数据渲染页面。这个模板已经内置了让这一切无缝发生的能力，我们管这个叫“状态注水”。为了保证数据在服务端和客户端之间传递时的类型安全，我们约定使用 `src/types/index.ts` 文件来存放所有跨端共享的类型。
+
+**工作流程**
+
+1.  **定义共享类型**: 在 `src/types/index.ts` 中定义你的页面组件需要的 Props 类型。
+    ```typescript
+    export interface HomePageProps {
+      userName: string;
+    }
+    ```
+2.  **服务端获取数据**: 在你的路由文件里 (例如 `server/routes/home/index.tsx`)，导入这个类型，然后获取数据并传递给组件和 `renderPage` 函数。
+    ```typescript
+    import type { HomePageProps } from '../../../src/types';
+    // ...
+    const initialData: HomePageProps = { userName: 'Gemini' };
+    const pageComponent = <HomePage {...initialData} />;
+    const html = renderPage(pageComponent, 'home', initialData);
+    // ...
+    ```
+3.  **客户端接收数据**: 客户端入口文件 (例如 `src/pages/home/client.tsx`) 会自动拿到数据。为了让 TypeScript 知道这份数据的类型，我们也需要导入共享类型并进行断言。
+    ```typescript
+    import type { HomePageProps } from '../../types';
+    // ...
+    const initialData = JSON.parse(...) as HomePageProps;
+    hydrateRoot(document.getElementById('root')!, <HomePage {...initialData} />);
+    ```
+
+通过这个流程，你就拥有了完全端到端类型安全的数据传递。任何不匹配都会被 TypeScript 在编译时发现，非常稳健。
