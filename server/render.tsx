@@ -2,17 +2,15 @@ import { renderToString } from 'react-dom/server';
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
+import { PROT } from './constants/index.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
 // --- Manifest Loading ---
-// In production, we need to read the manifest to know the hashed filenames of our assets.
 const manifestPath = path.join(process.cwd(), 'dist/client/.vite/manifest.json');
 const manifest = isProd ? JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) : {};
 
 // --- Document Component ---
-// This component is a template for our entire HTML page.
-// It's a more robust and declarative way to build the page than string replacing a template file.
 interface DocumentProps {
   title: string;
   appHtml: string;
@@ -28,6 +26,22 @@ function Document({ title, appHtml, initialDataScript, clientScriptSrc }: Docume
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
+
+        {/* 开发环境添加 React Refresh 脚本 */}
+        {!isProd && (
+        <script
+          type="module"
+          dangerouslySetInnerHTML={{
+            __html: `
+                import RefreshRuntime from 'http://localhost:${PROT}/@react-refresh'
+                RefreshRuntime.injectIntoGlobalHook(window)
+                window.$RefreshReg$ = () => {}
+                window.$RefreshSig$ = () => (type) => type
+                window.__vite_plugin_react_preamble_installed__ = true
+              `,
+          }}
+        />
+        )}
       </head>
       <body>
         <div id="root" dangerouslySetInnerHTML={{ __html: appHtml }} />
@@ -36,6 +50,12 @@ function Document({ title, appHtml, initialDataScript, clientScriptSrc }: Docume
           type="application/json"
           dangerouslySetInnerHTML={{ __html: initialDataScript }}
         />
+
+        {/* 开发环境需要额外的 Vite 客户端脚本 */}
+        {!isProd && (
+        <script type="module" src={`http://localhost:${PROT}/@vite/client`} />
+        )}
+
         <script type="module" src={clientScriptSrc} />
       </body>
     </html>
@@ -65,7 +85,8 @@ export function renderPage({ pageComponent, pageName, initialData, title = DEFAU
     const entryKey = `src/pages/${pageName}/client.tsx`;
     clientScriptSrc = manifest[entryKey] ? `/${manifest[entryKey].file}` : '';
   } else {
-    clientScriptSrc = `/src/pages/${pageName}/client.tsx`;
+    // 开发环境使用 Vite 开发服务器的 URL
+    clientScriptSrc = `http://localhost:${PROT}/src/pages/${pageName}/client.tsx`;
   }
 
   if (!clientScriptSrc) {

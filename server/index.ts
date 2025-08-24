@@ -4,10 +4,11 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { createServer as createViteServer } from 'vite';
 import { routes } from './routes/index.js';
+import { PROT } from './constants/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const port = 3000;
+const port = PROT;
 const isProd = process.env.NODE_ENV === 'production';
 
 async function start() {
