@@ -10,5 +10,5 @@ const initialData = JSON.parse(initialDataElement?.textContent || '{}') as HomeP
 // 2. Hydrate the component with the initial data
 hydrateRoot(
   document.getElementById('root')!,
-  <HomePage {...initialData} />
+  <HomePage {...initialData} />,
 );
