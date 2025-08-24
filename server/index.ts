@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { createServer as createViteServer } from 'vite';
-import { routes } from './routes/index.ts';
+import { routes } from './routes/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,8 +16,9 @@ async function start() {
   if (!isProd) {
     // In development, instantiate Vite server and apply as middleware
     const vite = await createViteServer({
-      server: { 
+      server: {
         middlewareMode: true,
+        // @ts-ignore - This option is valid but may not be in the type definition
         printUrls: false, // Prevent Vite from printing its own URL
       },
       appType: 'custom',

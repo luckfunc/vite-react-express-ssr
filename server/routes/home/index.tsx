@@ -1,8 +1,8 @@
 import React from 'react';
 import express from 'express';
-import { renderPage } from '../../render.ts';
-import HomePage from '../../../src/pages/home/index.tsx';
-import type { HomePageProps } from '../../../src/types';
+import { renderPage } from '../../render.js';
+import HomePage from '../../../src/pages/home/index.js';
+import type { HomePageProps } from '../../../src/types/index.js';
 
 export function router() {
   const router = express.Router();

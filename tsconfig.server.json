@@ -7,8 +7,8 @@
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "react-jsx", // 添加 JSX 支持
-    "jsxImportSource": "react" // 指定 JSX 导入源
+    "jsx": "react", // 添加 JSX 支持
+    
   },
   "include": ["server"],
   "ts-node": {

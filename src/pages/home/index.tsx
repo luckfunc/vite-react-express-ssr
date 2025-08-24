@@ -1,5 +1,5 @@
 import React from 'react';
-import type { HomePageProps } from '../../types';
+import type { HomePageProps } from '../../types/index.js';
 
 export default function HomePage({ userName = 'Guest' }: HomePageProps) {
   return (

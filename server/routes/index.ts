@@ -1,8 +1,8 @@
 // This file acts as a central registry for all server-side routes.
 
 // 1. Import route modules
-import * as home from './home/index.tsx';
-import * as about from './about/index.tsx';
+import * as home from './home/index.js';
+import * as about from './about/index.js';
 
 // 2. Export them in a single object.
 // The key (e.g., 'home', 'about') will be used to derive the route path.

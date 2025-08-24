@@ -8,7 +8,7 @@ const isProd = process.env.NODE_ENV === 'production';
 // 1. 缓存 HTML 模板和 manifest
 // 在生产环境中，路径是相对于 dist/server 的
 const templatePath = path.join(process.cwd(), isProd ? './public/index.html' : 'public/index.html');
-const manifestPath = path.join(process.cwd(), 'dist/client/manifest.json');
+const manifestPath = path.join(process.cwd(), 'dist/client/.vite/manifest.json');
 
 let template = '';
 try {
@@ -16,7 +16,7 @@ try {
 } catch (e) {
   console.error(`HTML template not found at ${templatePath}. Please ensure 'public/index.html' exists.`);
   // 在没有模板的情况下，提供一个非常基础的后备模板
-  template = `<!DOCTYPE html><html><head><title>Vite React Express SSR</title></head><body><div id="root"></div></body></html>`;
+  template = '<!DOCTYPE html><html><head><title>Vite React Express SSR</title></head><body><div id="root"></div></body></html>';
 }
 
 const manifest = isProd ? JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) : {};
@@ -39,7 +39,7 @@ export function renderPage(pageComponent: React.ReactElement, pageName: string, 
     // 生产环境：从 manifest 获取带 hash 的文件名
     const entryKey = `src/pages/${pageName}/client.tsx`;
     if (manifest[entryKey]) {
-      clientScript = `<script type="module" src="/${manifest[entryKey]['file']}"></script>`;
+      clientScript = `<script type="module" src="/${manifest[entryKey].file}"></script>`;
     } else {
       console.warn(`Manifest entry not found for ${entryKey}`);
     }
