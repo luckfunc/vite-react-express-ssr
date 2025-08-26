@@ -1,35 +1,27 @@
+// vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { glob } from 'glob';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  root: '.',
   build: {
     outDir: 'dist/client',
-    emptyOutDir: true,
-    manifest: true,
+    manifest: true, // 生产环境生成 manifest.json
     rollupOptions: {
-      input: Object.fromEntries(
-        glob.sync('src/pages/**/client.tsx').map(file => [
-          // This will produce an entry name like 'home' or 'about' from 'src/pages/home/client.tsx'
-          path.relative('src/pages', file.slice(0, file.length - path.extname(file).length)).replace('/client', ''),
-          // This resolves the absolute path to the entry file
-          path.resolve(__dirname, file)
-        ])
-      ),
+      input: {
+        home: path.resolve(__dirname, 'src/pages/home/index.tsx'),
+        about: path.resolve(__dirname, 'src/pages/about/index.tsx'),
+        contact: path.resolve(__dirname, 'src/pages/contact/index.tsx'),
+      },
       output: {
-        entryFileNames: 'assets/[name].js',
+        entryFileNames: 'assets/[name].js', // 可以带 hash 也可以固定
         chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]'
-      }
-    }
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
   },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
-  }
+  ssr: {
+    noExternal: ['react', 'react-dom', 'react-router-dom'],
+  },
 });

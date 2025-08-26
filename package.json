@@ -1,32 +1,18 @@
 {
-  "name": "vite-react-express-ssr",
-  "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "homepage": "https://github.com/luckfunc/vite-react-express-ssr#readme",
-  "bugs": {
-    "url": "https://github.com/luckfunc/vite-react-express-ssr/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/luckfunc/vite-react-express-ssr.git"
-  },
-  "funding": "https://github.com/sponsors/luckfunc",
-  "license": "ISC",
-  "author": "",
+  "name": "express-vite-ssr",
+  "version": "0.0.0",
+  "private": true,
   "type": "module",
-  "main": "index.js",
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.server.json",
+    "build": "vite build --outDir dist/client && vite build --ssr server/ssr-render.ts --outDir dist/server",
     "ci:eslint": "eslint -f json src -o ./.ci/eslint.json",
-    "dev": "nodemon --watch server --watch src --ext ts,tsx --exec tsx server/index.ts",
+    "dev": "tsx server/index.tsx",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "start": "NODE_ENV=production node dist/server/index.js",
-    "type-check": "tsc --noEmit"
+    "start": "NODE_ENV=production tsx server/index.tsx"
   },
   "dependencies": {
-    "express": "^5.1.0",
+    "express": "^4.21.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
@@ -34,13 +20,10 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.11",
-    "@types/react-dom": "^19.1.7",
+    "@types/react-dom": "^19.1.8",
     "@vitejs/plugin-react": "^5.0.1",
-    "concurrently": "^9.2.0",
     "eslint": "^9.34.0",
     "eslint-config-ali": "^16.5.0",
-    "glob": "^11.0.3",
-    "nodemon": "^3.1.10",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vite": "^7.1.3"

@@ -1,11 +1,18 @@
 import React from 'react';
-import type { HomePageProps } from '../../types/index.js';
 
-export default function HomePage({ userName = 'Guest' }: HomePageProps) {
+interface HomeProps {
+  data?: string | null;
+}
+
+const Home: React.FC<HomeProps> = ({ data }) => {
   return (
     <div>
-      <h1>Hello, {userName}!</h1>
-      <p>This is the Home Page, rendered with data from the server.</p>
+      <h1>Home Page</h1>
+      <p>Welcome to the SSR demo with Express, Vite and TSX!</p>
+      {data && <p>Data from API: {data}</p>}
+      <a href="/about">Go to About</a>
     </div>
   );
-}
+};
+
+export default Home;
