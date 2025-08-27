@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { PageProps, HomeProps } from '@types';
-import '../../assets/css/common.less';
 import './style.less';
 
 export default function App(props: PageProps<HomeProps>) {

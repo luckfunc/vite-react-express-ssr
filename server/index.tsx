@@ -15,9 +15,9 @@ const root = process.cwd();
 
 // 开发模式下各页面直接依赖的 less 文件
 const devStyles: Record<string, string[]> = {
-  home: ['/src/assets/css/common.less', '/src/pages/home/style.less'],
-  about: ['/src/assets/css/common.less'],
-  contact: ['/src/assets/css/common.less'],
+  home: ['/src/pages/home/style.less'],
+  about: [],
+  contact: [],
 };
 
 async function createServer() {
