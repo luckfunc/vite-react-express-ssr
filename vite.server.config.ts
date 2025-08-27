@@ -19,6 +19,11 @@ export default defineConfig({
       },
     },
   },
+  resolve: {
+    alias: {
+      '@pages': path.resolve(__dirname, './src/pages'),
+    },
+  },
   ssr: {
     noExternal: ['react', 'react-dom', 'react-router-dom'],
   },
