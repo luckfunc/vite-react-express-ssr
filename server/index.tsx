@@ -14,11 +14,11 @@ import { PageProps, HomeProps, AboutProps, ContactProps } from '@types';
 const root = process.cwd();
 
 // 开发模式下各页面直接依赖的 less 文件
-const devStyles: Record<string, string[]> = {
-  home: ['/src/pages/home/style.less'],
-  about: [],
-  contact: [],
-};
+// const devStyles: Record<string, string[]> = {
+//   home: ['/src/pages/home/style.less'],
+//   about: [],
+//   contact: [],
+// };
 
 async function createServer() {
   const app = express();
@@ -69,7 +69,9 @@ async function createServer() {
         cssFiles = pageManifest.css?.map(file => `/${file}`);
       } else {
         clientScript = `/src/pages/${pageName}/client.tsx`;
-        cssFiles = devStyles[pageName];
+        cssFiles = [
+          `/src/pages/${pageName}/style.less`,
+        ];
       }
 
       const html = renderTemplate({

@@ -22,6 +22,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@pages': path.resolve(__dirname, './src/pages'),
+      '@utils': path.resolve(__dirname, './src/utils'),
     },
   },
   css: {

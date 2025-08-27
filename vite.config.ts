@@ -4,9 +4,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react({
-    jsxRuntime: 'classic', // 使用 classic 以支持 TSX
-  })],
+  plugins: [react()],
   build: {
     outDir: 'dist/client',
     manifest: true, // 生产环境生成 manifest.json
@@ -21,6 +19,12 @@ export default defineConfig({
         chunkFileNames: 'assets/[name].js',
         assetFileNames: 'assets/[name].[ext]',
       },
+    },
+  },
+  resolve: {
+    alias: {
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@utils': path.resolve(__dirname, './src/utils'),
     },
   },
   ssr: {
