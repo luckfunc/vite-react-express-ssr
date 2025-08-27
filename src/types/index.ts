@@ -3,7 +3,6 @@ export interface PageProps<T = {}> {
 }
 
 export interface HomeProps {
-  title: string;
 }
 
 export interface AboutProps {

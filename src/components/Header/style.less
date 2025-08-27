@@ -1,0 +1,38 @@
+:root {
+  --primary-text-color: #333;
+  --secondary-text-color: #666;
+  --border-color: #eaeaea;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: #fff; // Assuming a white background for the header
+
+  .logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    svg {
+      margin-right: 0.75rem;
+      color: #007bff;
+    }
+  }
+
+  .navigation a {
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: var(--secondary-text-color);
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--primary-text-color);
+    }
+  }
+}
