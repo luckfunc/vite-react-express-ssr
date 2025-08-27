@@ -29,7 +29,7 @@ async function createServer() {
   }
 
   // 读取 manifest.json（生产）
-  let manifest: Record<string, { file: string }> = {};
+  let manifest: Record<string, { file: string, css?: string[] }> = {};
   if (IS_PRODUCTION) {
     manifest = JSON.parse(fs.readFileSync(path.resolve(root, 'dist/client/.vite/manifest.json'), 'utf-8'));
   }
@@ -55,16 +55,21 @@ async function createServer() {
       const appHtml = renderToHtml(pageComponent);
 
       let clientScript: string;
+      let cssFiles: string[] | undefined;
+
       if (IS_PRODUCTION) {
         const manifestKey = pageManifestKeyMap[pageName];
-        clientScript = `/${manifest[manifestKey].file}`;
+        const pageManifest = manifest[manifestKey];
+        clientScript = `/${pageManifest.file}`;
+        cssFiles = pageManifest.css?.map(file => `/${file}`);
       } else {
         clientScript = `/src/pages/${pageName}/client.tsx`;
       }
-      console.log('ssrProps', ssrProps);
+
       const html = renderTemplate({
         appHtml,
         clientScript,
+        cssFiles,
         title,
         pageName,
         ssrProps,

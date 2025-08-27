@@ -4,12 +4,13 @@ import { IS_PRODUCTION } from './constants';
 interface TemplateProps {
   appHtml: string;
   clientScript: string;
+  cssFiles?: string[];
   title: string;
   pageName: string;
   ssrProps?: any;
 }
 
-export function renderTemplate({ appHtml, clientScript, title, pageName, ssrProps }: TemplateProps) {
+export function renderTemplate({ appHtml, clientScript, cssFiles, title, pageName, ssrProps }: TemplateProps) {
   console.log('clientScript', clientScript);
   return (
     `<!DOCTYPE html>${
@@ -19,6 +20,8 @@ export function renderTemplate({ appHtml, clientScript, title, pageName, ssrProp
             <meta charSet="UTF-8" />
             <title>{title}</title>
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            {/* 生产环境使用 link，支持缓存 */}
+            {cssFiles?.map(file => <link rel="stylesheet" href={file} key={file} />)}
           </head>
           <body>
             <section id="root" dangerouslySetInnerHTML={{ __html: appHtml }} />

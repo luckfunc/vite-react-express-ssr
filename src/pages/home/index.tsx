@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { PageProps, HomeProps } from '@types';
+import '../../assets/css/common.less';
+import './style.less';
 
 export default function App(props: PageProps<HomeProps>) {
   const { data } = props;
@@ -10,7 +12,7 @@ export default function App(props: PageProps<HomeProps>) {
   }, []);
 
   return (
-    <div>
+    <div className="home-page">
       <h1>{data?.title}</h1>
       <p>Welcome to the SSR demo with Express, Vite and TSX!</p>
       <a href="/about">Go to About</a>

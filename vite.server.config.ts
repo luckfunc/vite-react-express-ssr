@@ -24,6 +24,13 @@ export default defineConfig({
       '@pages': path.resolve(__dirname, './src/pages'),
     },
   },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+      },
+    },
+  },
   ssr: {
     noExternal: ['react', 'react-dom', 'react-router-dom'],
   },
