@@ -13,6 +13,13 @@ import { PageProps, HomeProps, AboutProps, ContactProps } from '@types';
 
 const root = process.cwd();
 
+// 开发模式下各页面直接依赖的 less 文件
+const devStyles: Record<string, string[]> = {
+  home: ['/src/assets/css/common.less', '/src/pages/home/style.less'],
+  about: ['/src/assets/css/common.less'],
+  contact: ['/src/assets/css/common.less'],
+};
+
 async function createServer() {
   const app = express();
   let vite: ViteDevServer | undefined;
@@ -50,9 +57,7 @@ async function createServer() {
     ssrProps: PageProps<T> = {},
   ) => {
     try {
-      // Create the component with props before rendering
-      const pageComponent = <PageComponent {...ssrProps} />;
-      const appHtml = renderToHtml(pageComponent);
+      const appHtml = renderToHtml(<PageComponent {...ssrProps} />);
 
       let clientScript: string;
       let cssFiles: string[] | undefined;
@@ -64,6 +69,7 @@ async function createServer() {
         cssFiles = pageManifest.css?.map(file => `/${file}`);
       } else {
         clientScript = `/src/pages/${pageName}/client.tsx`;
+        cssFiles = devStyles[pageName];
       }
 
       const html = renderTemplate({
@@ -90,8 +96,6 @@ async function createServer() {
     renderPage<AboutProps>(req, res, About, 'about', 'About Us', { data: { title: 'About Us', description: 'This is the about page.' } }));
   app.get('/contact', (req, res) =>
     renderPage<ContactProps>(req, res, Contact, 'contact', 'Contact', { data: { email: 'test@example.com', phone: '123-456-7890' } }));
-
-  // app.use('*', (_req, res) => res.status(404).send('404 Not Found'));
 
   app.listen(5173, () => console.log('Server listening on http://localhost:5173'));
 }

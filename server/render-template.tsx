@@ -11,7 +11,6 @@ interface TemplateProps {
 }
 
 export function renderTemplate({ appHtml, clientScript, cssFiles, title, pageName, ssrProps }: TemplateProps) {
-  console.log('clientScript', clientScript);
   return (
     `<!DOCTYPE html>${
       renderToStaticMarkup(
@@ -48,7 +47,6 @@ export function renderTemplate({ appHtml, clientScript, cssFiles, title, pageNam
               />
             ) : null}
             <script type="module" src={clientScript} />
-            <script type="module" />
           </body>
         </html>,
       )}`
