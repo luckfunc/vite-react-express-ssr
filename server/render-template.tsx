@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { IS_PRODUCTION } from './constants';
 
@@ -11,45 +10,44 @@ interface TemplateProps {
 }
 
 export function renderTemplate({ appHtml, clientScript, title, pageName, ssrProps }: TemplateProps) {
-  console.log ('clientScript', clientScript)
+  console.log('clientScript', clientScript);
   return (
-    '<!DOCTYPE html>' +
-    renderToStaticMarkup(
-      <html lang="en" data-page={pageName}>
-      <head>
-        <meta charSet="UTF-8" />
-        <title>{title}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </head>
-      <body>
-      <section id="root" dangerouslySetInnerHTML={{ __html: appHtml }} />
-      {/* 只在开发环境引入 React Refresh */}
-      {!IS_PRODUCTION && (
-        <script
-          type="module"
-          dangerouslySetInnerHTML={{
-            __html: `
+    `<!DOCTYPE html>${
+      renderToStaticMarkup(
+        <html lang="en" data-page={pageName}>
+          <head>
+            <meta charSet="UTF-8" />
+            <title>{title}</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          </head>
+          <body>
+            <section id="root" dangerouslySetInnerHTML={{ __html: appHtml }} />
+            {/* 只在开发环境引入 React Refresh */}
+            {!IS_PRODUCTION && (
+            <script
+              type="module"
+              dangerouslySetInnerHTML={{
+                __html: `
                   import RefreshRuntime from 'http://localhost:5173/@react-refresh'
                   RefreshRuntime.injectIntoGlobalHook(window)
                   window.$RefreshReg$ = () => {}
                   window.$RefreshSig$ = () => (type) => type
                   window.__vite_plugin_react_preamble_installed__ = true
                 `,
-          }}
-        />
-      )}
-      {ssrProps ? (
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.__SSR_PROPS__ = ${JSON.stringify(ssrProps)};`,
-          }}
-        />
-      ): null}
-      <script type="module" src={clientScript}></script>
-      <script type="module">
-      </script>
-      </body>
-      </html>
-    )
+              }}
+            />
+            )}
+            {ssrProps ? (
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `window.__SSR_PROPS__ = ${JSON.stringify(ssrProps)};`,
+                }}
+              />
+            ) : null}
+            <script type="module" src={clientScript} />
+            <script type="module" />
+          </body>
+        </html>,
+      )}`
   );
 }

@@ -47,7 +47,7 @@ async function createServer() {
     PageComponent: React.ComponentType<PageProps<T>>,
     pageName: 'home' | 'about' | 'contact',
     title: string,
-    ssrProps: PageProps<T> = {}
+    ssrProps: PageProps<T> = {},
   ) => {
     try {
       // Create the component with props before rendering
@@ -57,12 +57,11 @@ async function createServer() {
       let clientScript: string;
       if (IS_PRODUCTION) {
         const manifestKey = pageManifestKeyMap[pageName];
-        clientScript = '/' + manifest[manifestKey].file;
+        clientScript = `/${manifest[manifestKey].file}`;
       } else {
         clientScript = `/src/pages/${pageName}/client.tsx`;
       }
-      console.log ('ssrProps', ssrProps)
-
+      console.log('ssrProps', ssrProps);
       const html = renderTemplate({
         appHtml,
         clientScript,
@@ -79,17 +78,13 @@ async function createServer() {
     }
   };
 
-
   // 路由
   app.get('/', (req, res) =>
-    renderPage<HomeProps>(req, res, Home, 'home', 'Home Page', { data: { title: 'Home Page' } })
-  );
+    renderPage<HomeProps>(req, res, Home, 'home', 'Home Page', { data: { title: 'Home Page' } }));
   app.get('/about', (req, res) =>
-    renderPage<AboutProps>(req, res, About, 'about', 'About Us', { data: { title: 'About Us', description: 'This is the about page.' } })
-  );
+    renderPage<AboutProps>(req, res, About, 'about', 'About Us', { data: { title: 'About Us', description: 'This is the about page.' } }));
   app.get('/contact', (req, res) =>
-    renderPage<ContactProps>(req, res, Contact, 'contact', 'Contact', { data: { email: 'test@example.com', phone: '123-456-7890' } })
-  );
+    renderPage<ContactProps>(req, res, Contact, 'contact', 'Contact', { data: { email: 'test@example.com', phone: '123-456-7890' } }));
 
   // app.use('*', (_req, res) => res.status(404).send('404 Not Found'));
 
