@@ -1,5 +1,87 @@
-@import '../../assets/css/common.less';
-
 .home-page {
-  background: red;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: sans-serif;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+
+      svg {
+        margin-right: 0.5rem;
+      }
+    }
+
+    .navigation a {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: #333;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .main-content {
+    display: flex;
+    flex: 1;
+  }
+
+  .sidebar {
+    width: 200px;
+    padding: 1rem;
+    border-right: 1px solid #eee;
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 0;
+      cursor: pointer;
+
+      &:hover {
+        color: #007bff;
+      }
+
+      svg {
+        margin-right: 0.75rem;
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    padding: 2rem;
+
+    h1 {
+      margin-top: 0;
+    }
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+
+    a {
+      margin: 0 0.5rem;
+      color: #555;
+
+      &:hover {
+        color: #000;
+      }
+    }
+  }
 }
