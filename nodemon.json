@@ -1,5 +1,5 @@
 {
-  "watch": ["server"],
+  "watch": ["server", "src"],
   "ext": "ts,tsx,json",
   "exec": "vite-node server/index.tsx"
 }
