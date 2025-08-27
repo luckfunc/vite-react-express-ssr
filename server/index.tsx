@@ -8,16 +8,16 @@ import Home from '../src/pages/home';
 import About from '../src/pages/about';
 import Contact from '../src/pages/contact';
 import { renderTemplate } from './render-template';
+import { IS_PRODUCTION } from './constants';
 import { PageProps, HomeProps, AboutProps, ContactProps } from '@types';
 
-const isProd = process.env.NODE_ENV === 'production';
 const root = process.cwd();
 
 async function createServer() {
   const app = express();
   let vite: ViteDevServer | undefined;
 
-  if (!isProd) {
+  if (!IS_PRODUCTION) {
     vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'custom',
@@ -30,7 +30,7 @@ async function createServer() {
 
   // 读取 manifest.json（生产）
   let manifest: Record<string, { file: string }> = {};
-  if (isProd) {
+  if (IS_PRODUCTION) {
     manifest = JSON.parse(fs.readFileSync(path.resolve(root, 'dist/client/.vite/manifest.json'), 'utf-8'));
   }
 
@@ -55,7 +55,7 @@ async function createServer() {
       const appHtml = renderToHtml(pageComponent);
 
       let clientScript: string;
-      if (isProd) {
+      if (IS_PRODUCTION) {
         const manifestKey = pageManifestKeyMap[pageName];
         clientScript = '/' + manifest[manifestKey].file;
       } else {

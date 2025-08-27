@@ -1,5 +1,6 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { IS_PRODUCTION } from './constants';
 
 interface TemplateProps {
   appHtml: string;
@@ -22,18 +23,21 @@ export function renderTemplate({ appHtml, clientScript, title, pageName, ssrProp
       </head>
       <body>
       <section id="root" dangerouslySetInnerHTML={{ __html: appHtml }} />
-      <script
-        type="module"
-        dangerouslySetInnerHTML={{
-          __html: `
-                import RefreshRuntime from 'http://localhost:5173/@react-refresh'
-                RefreshRuntime.injectIntoGlobalHook(window)
-                window.$RefreshReg$ = () => {}
-                window.$RefreshSig$ = () => (type) => type
-                window.__vite_plugin_react_preamble_installed__ = true
-              `,
-        }}
-      />
+      {/* 只在开发环境引入 React Refresh */}
+      {!IS_PRODUCTION && (
+        <script
+          type="module"
+          dangerouslySetInnerHTML={{
+            __html: `
+                  import RefreshRuntime from 'http://localhost:5173/@react-refresh'
+                  RefreshRuntime.injectIntoGlobalHook(window)
+                  window.$RefreshReg$ = () => {}
+                  window.$RefreshSig$ = () => (type) => type
+                  window.__vite_plugin_react_preamble_installed__ = true
+                `,
+          }}
+        />
+      )}
       {ssrProps ? (
         <script
           dangerouslySetInnerHTML={{
