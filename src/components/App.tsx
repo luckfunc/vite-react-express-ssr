@@ -4,7 +4,7 @@ interface AppProps {
   page: React.ReactNode;
 }
 
-export default function App ({ page }: AppProps) {
+export default function App({ page }: AppProps) {
   return (
     <div>
       <nav>
@@ -14,5 +14,4 @@ export default function App ({ page }: AppProps) {
       {page}
     </div>
   );
-};
-
+}

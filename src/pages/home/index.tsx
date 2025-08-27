@@ -1,18 +1,19 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { PageProps, HomeProps } from '@types';
 
-interface HomeProps {
-  data?: string | null;
-}
+export default function App(props: PageProps<HomeProps>) {
+  const { data } = props;
+  console.log('data', data);
+  useEffect(() => {
+    console.log('data', data);
+    console.log('哈哈');
+  }, []);
 
-const Home: React.FC<HomeProps> = ({ data }) => {
   return (
     <div>
-      <h1>Home Page</h1>
+      <h1>{data?.title}</h1>
       <p>Welcome to the SSR demo with Express, Vite and TSX!</p>
-      {data && <p>Data from API: {data}</p>}
       <a href="/about">Go to About</a>
     </div>
   );
-};
-
-export default Home;
+}

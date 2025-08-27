@@ -4,12 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build --outDir dist/client && vite build --ssr server/ssr-render.ts --outDir dist/server",
-    "ci:eslint": "eslint -f json src -o ./.ci/eslint.json",
-    "dev": "tsx server/index.tsx",
+    "dev": "nodemon",
+    "build": "vite build && vite build --config vite.server.config.ts",
+    "start": "NODE_ENV=production node dist/server/index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "start": "NODE_ENV=production tsx server/index.tsx"
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "express": "^5.1.0",
@@ -24,6 +23,7 @@
     "@vitejs/plugin-react": "^5.0.1",
     "eslint": "^9.34.0",
     "eslint-config-ali": "^16.5.0",
+    "nodemon": "^3.1.4",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vite": "^7.1.3"

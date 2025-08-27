@@ -1,5 +1,8 @@
+import React from 'react';
 import { hydrateRoot } from 'react-dom/client';
-import App from '../../components/App';
 import About from './index';
+import { getSsrProps } from '@utils';
+import '@types';
+import { AboutProps } from '@types';
 
-hydrateRoot(document.getElementById('app')!, <App page={<About />} />);
+hydrateRoot(document.getElementById('root')!, <About {...getSsrProps<AboutProps>()} />);

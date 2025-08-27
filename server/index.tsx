@@ -4,11 +4,11 @@ import express, { Request, Response } from 'express';
 import React from 'react';
 import { createServer as createViteServer, ViteDevServer } from 'vite';
 import { renderToHtml } from './ssr-render';
-import App from '../src/components/App';
 import Home from '../src/pages/home';
 import About from '../src/pages/about';
 import Contact from '../src/pages/contact';
 import { renderTemplate } from './render-template';
+import { PageProps, HomeProps, AboutProps, ContactProps } from '@types';
 
 const isProd = process.env.NODE_ENV === 'production';
 const root = process.cwd();
@@ -41,25 +41,36 @@ async function createServer() {
     contact: 'src/pages/contact/index.tsx',
   };
 
-  const renderPage = async (
+  const renderPage = async <T extends {}>(
     req: Request,
     res: Response,
-    pageComponent: React.ReactElement,
+    PageComponent: React.ComponentType<PageProps<T>>,
     pageName: 'home' | 'about' | 'contact',
-    title: string
+    title: string,
+    ssrProps: PageProps<T> = {}
   ) => {
     try {
-      const appHtml = renderToHtml(<App page={pageComponent} />);
-      let clientScript: string;
+      // Create the component with props before rendering
+      const pageComponent = <PageComponent {...ssrProps} />;
+      const appHtml = renderToHtml(pageComponent);
 
+      let clientScript: string;
       if (isProd) {
         const manifestKey = pageManifestKeyMap[pageName];
-        clientScript = '/assets/' + manifest[manifestKey].file;
+        clientScript = '/' + manifest[manifestKey].file;
       } else {
-        clientScript = `/src/pages/${pageName}/index.tsx`;
+        clientScript = `/src/pages/${pageName}/client.tsx`;
       }
+      console.log ('ssrProps', ssrProps)
 
-      const html = renderTemplate({ appHtml, clientScript, title });
+      const html = renderTemplate({
+        appHtml,
+        clientScript,
+        title,
+        pageName,
+        ssrProps,
+      });
+
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (e) {
       if (vite) vite.ssrFixStacktrace(e as Error);
@@ -68,18 +79,19 @@ async function createServer() {
     }
   };
 
+
   // 路由
   app.get('/', (req, res) =>
-    renderPage(req, res, <Home />, 'home', 'Home Page')
+    renderPage<HomeProps>(req, res, Home, 'home', 'Home Page', { data: { title: 'Home Page' } })
   );
   app.get('/about', (req, res) =>
-    renderPage(req, res, <About />, 'about', 'About Us')
+    renderPage<AboutProps>(req, res, About, 'about', 'About Us', { data: { title: 'About Us', description: 'This is the about page.' } })
   );
   app.get('/contact', (req, res) =>
-    renderPage(req, res, <Contact />, 'contact', 'Contact')
+    renderPage<ContactProps>(req, res, Contact, 'contact', 'Contact', { data: { email: 'test@example.com', phone: '123-456-7890' } })
   );
 
-  app.use('*', (_req, res) => res.status(404).send('404 Not Found'));
+  // app.use('*', (_req, res) => res.status(404).send('404 Not Found'));
 
   app.listen(5173, () => console.log('Server listening on http://localhost:5173'));
 }
