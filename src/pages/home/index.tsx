@@ -7,8 +7,8 @@ export default function App() {
         <div className="logo">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -32,8 +32,8 @@ export default function App() {
           <div className="sidebar-item">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -50,8 +50,8 @@ export default function App() {
           <div className="sidebar-item">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -72,11 +72,11 @@ export default function App() {
         </div>
       </main>
       <footer className="footer">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/luckfunc" target="_blank" rel="noopener noreferrer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -91,8 +91,8 @@ export default function App() {
         <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
