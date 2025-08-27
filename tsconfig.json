@@ -23,6 +23,10 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
+      "@": ["src"],
+      "@/*": ["src/*"],
+      "@assets": ["src/assets"],
+      "@assets/*": ["src/assets/*"],
       "@types": ["src/types"],
       "@types/*": ["src/types/*"],
       "@utils": ["src/utils"],
