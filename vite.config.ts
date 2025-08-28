@@ -10,9 +10,9 @@ export default defineConfig({
     manifest: true, // 生产环境生成 manifest.json
     rollupOptions: {
       input: {
-        home: path.resolve(__dirname, 'src/pages/home/index.tsx'),
-        about: path.resolve(__dirname, 'src/pages/about/index.tsx'),
-        contact: path.resolve(__dirname, 'src/pages/contact/index.tsx'),
+        home: path.resolve(__dirname, 'src/pages/home/client.tsx'),
+        about: path.resolve(__dirname, 'src/pages/about/client.tsx'),
+        contact: path.resolve(__dirname, 'src/pages/contact/client.tsx'),
       },
       output: {
         entryFileNames: 'assets/[name].js', // 可以带 hash 也可以固定

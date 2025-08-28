@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import express, { Request, Response } from 'express';
 import React from 'react';
-import { createServer as createViteServer, ViteDevServer } from 'vite';
+import { createServer as createViteServer, Manifest, ViteDevServer } from 'vite';
 import { renderToHtml } from './ssr-render';
 import Home from '@pages/home';
 import About from '@pages/about';
@@ -29,17 +29,16 @@ async function createServer() {
   }
 
   // 读取 manifest.json（生产）
-  let manifest: Record<string, { file: string, css?: string[] }> = {};
+  let manifest: Manifest | null = null;
   if (IS_PRODUCTION) {
-    manifest = JSON.parse(fs.readFileSync(path.resolve(root, 'dist/client/.vite/manifest.json'), 'utf-8'));
+    try {
+      manifest = JSON.parse(
+        fs.readFileSync(path.resolve(process.cwd(), 'dist/client/.vite/manifest.json'), 'utf-8'),
+      );
+    } catch (e) {
+      console.error(`[SSR] Failed to read manifest.json. Did you build the client?`, e);
+    }
   }
-
-  // 页面名 → manifest key 映射
-  const pageManifestKeyMap: Record<'home' | 'about' | 'contact', string> = {
-    home: 'src/pages/home/index.tsx',
-    about: 'src/pages/about/index.tsx',
-    contact: 'src/pages/contact/index.tsx',
-  };
 
   const renderPage = async <T extends {}>(
     req: Request,
@@ -52,19 +51,23 @@ async function createServer() {
     try {
       const appHtml = renderToHtml(<PageComponent {...ssrProps} />);
 
-      let clientScript: string;
+      let clientScript: string = '';
       let cssFiles: string[] | undefined;
 
-      if (IS_PRODUCTION) {
-        const manifestKey = pageManifestKeyMap[pageName];
-        const pageManifest = manifest[manifestKey];
-        clientScript = `/${pageManifest.file}`;
-        cssFiles = pageManifest.css?.map(file => `/${file}`);
+      if (IS_PRODUCTION && manifest) {
+        const manifestKey = `src/pages/${pageName}/client.tsx`; // Standardized client entry
+        const entry = manifest[manifestKey];
+        if (entry) {
+          clientScript = `/${entry.file}`;
+          cssFiles = entry.css?.map(file => `/${file}`) || [];
+        } else {
+          console.error(`[SSR] Entry not found in manifest for page: ${pageName} (key: ${manifestKey})`);
+        }
       } else {
+        // Dev environment: Vite handles it
         clientScript = `/src/pages/${pageName}/client.tsx`;
-        cssFiles = [
-          `/src/pages/${pageName}/style.less`,
-        ];
+        // In dev, CSS is injected by Vite, but we can link the source for consistency if needed
+        // cssFiles = [`/src/pages/${pageName}/style.less`];
       }
 
       const html = renderTemplate({
